@@ -1,0 +1,97 @@
+Related Post for Blogger
+
+            <b:includable id='postTextRelated'>
+              <b:if cond='data:post.labels'>
+<script>            
+/*<![CDATA[*/ 
+var relatedTitles = new Array();
+var relatedTitlesNum = 0;
+var relatedUrls = new Array();
+
+function related_results_labels(json) {
+    for (var i = 0; i < json.feed.entry.length; i++) {
+        var entry = json.feed.entry[i];
+        relatedTitles[relatedTitlesNum] = entry.title.$t;
+        for (var k = 0; k < entry.link.length; k++) {
+            if (entry.link[k].rel == 'alternate') {
+                relatedUrls[relatedTitlesNum] = entry.link[k].href;
+                relatedTitlesNum++;
+                break;
+            }
+        }
+    }
+}
+
+function removeRelatedDuplicates() {
+    var tmp = new Array(0);
+    var tmp2 = new Array(0);
+    for (var i = 0; i < relatedUrls.length; i++) {
+        if (!contains(tmp, relatedUrls[i])) {
+            tmp.length += 1;
+            tmp[tmp.length - 1] = relatedUrls[i];
+            tmp2.length += 1;
+            tmp2[tmp2.length - 1] = relatedTitles[i];
+        }
+    }
+    relatedTitles = tmp2;
+    relatedUrls = tmp;
+}
+
+function contains(a, e) {
+    for (var j = 0; j < a.length; j++)
+        if (a[j] == e) return true;
+    return false;
+}
+
+function printRelatedLabels() {
+    var r = Math.floor((relatedTitles.length - 1) * Math.random());
+    var i = 0;
+	var para = document.createElement("ul");
+    while (i < relatedTitles.length && i < 20) {
+		var parachild = document.createElement("li");
+		var parachildhref = document.createElement("a");
+		parachildhref.setAttribute("href", relatedUrls[r]);
+		parachildhref.innerHTML = relatedTitles[r];
+		parachild.appendChild(parachildhref);
+		para.appendChild(parachild);
+        if (r < relatedTitles.length - 1) {
+            r++;
+        } else {
+            r = 0;
+        }
+        i++;
+    }
+document.getElementById("postRelated").appendChild(para);
+}
+
+/*]]>*/
+</script>
+        <div class='postRelated' id='postRelated'><b>You Might Also Like:</b></div>         
+            <b:loop index='i' values='data:post.labels' var='label'>
+              <b:if cond='data:i&lt;1'>
+                <script expr:src='&quot;/feeds/posts/default/-/&quot; + data:label.name + &quot;?alt=json-in-script&amp;callback=related_results_labels&amp;max-results=3&quot;' rel='preload'/>
+              </b:if>
+            </b:loop>
+
+          <script>window.onload = function() {printRelatedLabels(); removeRelatedDuplicates();}</script>
+		 </b:if>
+      </b:includable>
+
+
+Pemindah:
+
+<script>
+function insertAfter(tbh,tgt) {
+	var prt = tgt.parentNode;
+	if (prt.lastChild == tgt) {prt.appendChild(tbh);} 
+	else {prt.insertBefore(tbh,tgt.nextSibling);}}
+  
+  var inrel = document.getElementById(&quot;inline-related-post&quot;);
+  var pt1 = tg1.length; var pt2 = tg2.length; 
+  document.addEventListener(&quot;DOMContentLoaded&quot;, function(event) {
+if (pt1 &gt; 0) {
+    insertAfter(inrel, tg1[4]);
+} else if (pt2 &gt; 0) {
+    insertAfter(inrel, tg2[4]);} else {}
+  })
+</script>
